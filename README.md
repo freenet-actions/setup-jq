@@ -6,7 +6,7 @@ Ein `cmd` Befehl ist erforderlich, welches an den Parser weitergeleitet wird.
 
 ## Beispiel
 ```yaml
-uses: md-actions/setup-jq@v1
+uses: md-actions/setup-jq@v1.0
 with:
   cmd: jq -C '.' package.json
 ```
