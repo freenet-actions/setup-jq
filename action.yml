@@ -1,0 +1,19 @@
+
+name: 'Run jq'
+description: 'Json Parser for data and output as result'
+branding:
+  icon: 'mic'
+  color: 'purple'
+inputs:
+  cmd:
+    description: 'jq command with arguments'
+    required: true
+outputs:
+  value:
+    description: 'What jq is outputs'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.cmd }}
+    - ${{ inputs.working_directory }}
