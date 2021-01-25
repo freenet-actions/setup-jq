@@ -1,5 +1,5 @@
 # setup-jq
-[![LICENSE](https://img.shields.io/github/license/md-actions/setup-jq)](https://github.com/md-actions/setup-ajq/blob/main/LICENSE)
+[![LICENSE](https://img.shields.io/github/license/md-actions/setup-jq)](https://github.com/md-actions/setup-jq/blob/main/LICENSE)
 
 Mit diesen Action kannst du einen Json-Parser ausführen und den Output ausgeben lassen.
 
