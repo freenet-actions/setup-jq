@@ -9,7 +9,9 @@ const toolName = 'jq'
 export class AppInstaller implements Installer {
   async install(version: string): Promise<void> {
     const url = getDownloadUrl(version, toolName)
+
     console.log(`install app called version : ${version} url : ${url}`)
+
     const appPath = await getBinary(toolName, version, url)
 
     console.log(`${toolName} has been cached at ${appPath}`)
