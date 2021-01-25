@@ -1,14 +1,11 @@
 # setup-jq
 [![LICENSE](https://img.shields.io/github/license/md-actions/setup-jq)](https://github.com/md-actions/setup-jq/blob/main/LICENSE)
 
-Mit diesen Action kannst du einen Json-Parser ausführen und den Output ausgeben lassen.
+Mit diesen Action kannst du einen Json-Parser installieren und das jq Kommand in Workflow benutzen.
 
-## Eingabe
-Ein `cmd` Befehl ist erforderlich, welches an den Parser weitergeleitet wird.
 
 ## Beispiel
 ```yaml
-uses: md-actions/setup-jq@v1.0
-with:
-  cmd: jq -C '.' package.json
+uses: md-actions/setup-jq@v1
+
 ```

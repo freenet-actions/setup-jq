@@ -1,0 +1,61 @@
+name: 'build-test-release'
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+    paths-ignore:
+    - '.github/**'
+    - 'README.md'
+
+jobs:
+  build: # make sure build/ci work properly
+    name: Build Package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          npm install
+      - run: |
+          npm run all
+      - uses: actions/upload-artifact@v2
+        with:
+          name: action-package
+          path: |
+            action.yml
+            dist/*
+  test:
+    name: Test the action
+    runs-on: ubuntu-latest
+    needs: build       
+    steps:
+    - uses: actions/download-artifact@v2
+      with:
+        name: action-package
+    - name: run test
+      uses: ./
+  release:
+    name: Publish new release
+    runs-on: ubuntu-latest
+    if: "contains(github.event.head_commit.message, '[release]')"
+    needs: test
+    steps:
+    - uses: actions/checkout@v2
+    - name: build release
+      run: |
+       git config --local user.email "action@github.com"
+       git config --local user.name "GitHub Action"                    
+       npm install
+       npm run build && npm run package
+       git add dist
+       git commit --allow-empty -m "new release"
+       PACKAGE_VERSION=$(node -p "require('./package.json').version")
+       git tag -fa v$PACKAGE_VERSION -m "Update tag"
+       git push origin v$PACKAGE_VERSION --force
+    - name: Increment Version
+      run: |
+       npm version patch
+       git push --force
+
+
+

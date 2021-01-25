@@ -1,19 +1,11 @@
-
-name: 'Run jq'
-description: 'Json Parser for data and output as result'
-branding:
-  icon: 'mic'
-  color: 'purple'
+name: 'setup-jq'
+description: 'Install jq parser'
+author: 'mobilcom-debitel'
 inputs:
-  cmd:
-    description: 'jq command with arguments'
+  version: 
     required: true
-outputs:
-  value:
-    description: 'What jq is outputs'
+    description: 'Version of jq'
+    default: '1.6'
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
-  args:
-    - ${{ inputs.cmd }}
-    - ${{ inputs.working_directory }}
+  using: 'node12'
+  main: 'dist/index.js'
