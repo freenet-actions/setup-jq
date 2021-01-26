@@ -6,6 +6,6 @@ Mit diesen Action kannst du einen Json-Parser installieren und das jq Kommand in
 
 ## Beispiel
 ```yaml
-uses: md-actions/setup-jq@v1
+uses: md-actions/setup-jq@v1.0.0
 
 ```
