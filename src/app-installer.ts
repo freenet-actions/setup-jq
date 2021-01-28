@@ -1,23 +1,21 @@
 import * as core from '@actions/core'
+import * as tc from '@actions/tool-cache'
+import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
-import {Installer} from './installer'
-import {getBinary} from './utils'
 
-const toolName = 'jq'
+export async function install(version: string): Promise<void> {
+  const toolName = 'jq'
 
-export class AppInstaller implements Installer {
-  async install(version: string): Promise<void> {
-    const url = getDownloadUrl(version, toolName)
+  const url = getDownloadUrl(version, toolName)
 
-    console.log(`install app called version : ${version} url : ${url}`)
+  console.log(`install app called version : ${version} url : ${url}`)
 
-    const appPath = await getBinary(toolName, version, url)
+  const appPath = await getBinary(toolName, version, url)
 
-    console.log(`${toolName} has been cached at ${appPath}`)
+  console.log(`${toolName} has been cached at ${appPath}`)
 
-    core.addPath(path.dirname(appPath))
-  }
+  core.addPath(path.dirname(appPath))
 }
 
 function getDownloadUrl(version: string, tool: string): string {
@@ -54,4 +52,48 @@ function getAppName(tool: string): string {
     throw `Unsupported platform. platform:${os.platform()}, arch:${os.arch()}`
   }
   return appname
+}
+
+async function getBinary(
+  toolName: string,
+  version: string,
+  url: string
+): Promise<string> {
+  let cachedToolpath: string
+  cachedToolpath = tc.find(toolName, version)
+
+  if (!cachedToolpath) {
+    core.debug(`Downloading ${toolName} from: ${url}`)
+
+    let downloadPath: string | null = null
+    try {
+      downloadPath = await tc.downloadTool(url)
+    } catch (error) {
+      core.debug(error)
+      throw `Failed to download version ${version}: ${error}`
+    }
+
+    cachedToolpath = await tc.cacheFile(
+      downloadPath,
+      toolName + getExecutableExtension(),
+      toolName,
+      version
+    )
+  }
+
+  const executablePath = path.join(
+    cachedToolpath,
+    toolName + getExecutableExtension()
+  )
+
+  fs.chmodSync(executablePath, '777')
+
+  return executablePath
+}
+
+function getExecutableExtension(): string {
+  if (os.type().match(/^Win/)) {
+    return '.exe'
+  }
+  return ''
 }

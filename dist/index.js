@@ -36,24 +36,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.AppInstaller = void 0;
+exports.install = void 0;
 const core = __importStar(__nccwpck_require__(186));
+const tc = __importStar(__nccwpck_require__(784));
+const fs = __importStar(__nccwpck_require__(747));
 const os = __importStar(__nccwpck_require__(87));
 const path = __importStar(__nccwpck_require__(622));
-const utils_1 = __nccwpck_require__(918);
-const toolName = 'jq';
-class AppInstaller {
-    install(version) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const url = getDownloadUrl(version, toolName);
-            console.log(`install app called version : ${version} url : ${url}`);
-            const appPath = yield utils_1.getBinary(toolName, version, url);
-            console.log(`${toolName} has been cached at ${appPath}`);
-            core.addPath(path.dirname(appPath));
-        });
-    }
+function install(version) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const toolName = 'jq';
+        const url = getDownloadUrl(version, toolName);
+        console.log(`install app called version : ${version} url : ${url}`);
+        const appPath = yield getBinary(toolName, version, url);
+        console.log(`${toolName} has been cached at ${appPath}`);
+        core.addPath(path.dirname(appPath));
+    });
 }
-exports.AppInstaller = AppInstaller;
+exports.install = install;
 function getDownloadUrl(version, tool) {
     const appname = getAppName(tool);
     return `https://github.com/stedolan/jq/releases/download/jq-${version}/${appname}`;
@@ -87,6 +86,33 @@ function getAppName(tool) {
         throw `Unsupported platform. platform:${os.platform()}, arch:${os.arch()}`;
     }
     return appname;
+}
+function getBinary(toolName, version, url) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let cachedToolpath;
+        cachedToolpath = tc.find(toolName, version);
+        if (!cachedToolpath) {
+            core.debug(`Downloading ${toolName} from: ${url}`);
+            let downloadPath = null;
+            try {
+                downloadPath = yield tc.downloadTool(url);
+            }
+            catch (error) {
+                core.debug(error);
+                throw `Failed to download version ${version}: ${error}`;
+            }
+            cachedToolpath = yield tc.cacheFile(downloadPath, toolName + getExecutableExtension(), toolName, version);
+        }
+        const executablePath = path.join(cachedToolpath, toolName + getExecutableExtension());
+        fs.chmodSync(executablePath, '777');
+        return executablePath;
+    });
+}
+function getExecutableExtension() {
+    if (os.type().match(/^Win/)) {
+        return '.exe';
+    }
+    return '';
 }
 
 
@@ -127,13 +153,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(186));
-const app_installer_1 = __nccwpck_require__(411);
+const installer = __importStar(__nccwpck_require__(411));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const version = core.getInput('version');
             core.debug('version ${version} ');
-            const installer = new app_installer_1.AppInstaller();
             yield installer.install(version);
         }
         catch (error) {
@@ -142,108 +167,6 @@ function run() {
     });
 }
 run();
-
-
-/***/ }),
-
-/***/ 918:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getExecutableExtension = exports.getTarballBinary = exports.getBinary = void 0;
-const core = __importStar(__nccwpck_require__(186));
-const tc = __importStar(__nccwpck_require__(784));
-const os = __importStar(__nccwpck_require__(87));
-const fs = __importStar(__nccwpck_require__(747));
-const path = __importStar(__nccwpck_require__(622));
-function getBinary(toolName, version, url) {
-    return __awaiter(this, void 0, void 0, function* () {
-        let cachedToolpath;
-        cachedToolpath = tc.find(toolName, version);
-        if (!cachedToolpath) {
-            core.debug(`Downloading ${toolName} from: ${url}`);
-            let downloadPath = null;
-            try {
-                downloadPath = yield tc.downloadTool(url);
-            }
-            catch (error) {
-                core.debug(error);
-                throw `Failed to download version ${version}: ${error}`;
-            }
-            cachedToolpath = yield tc.cacheFile(downloadPath, toolName + getExecutableExtension(), toolName, version);
-        }
-        const executablePath = path.join(cachedToolpath, toolName + getExecutableExtension());
-        fs.chmodSync(executablePath, '777');
-        return executablePath;
-    });
-}
-exports.getBinary = getBinary;
-function getTarballBinary(toolName, version, url, binaryPath = '') {
-    return __awaiter(this, void 0, void 0, function* () {
-        let cachedToolpath;
-        cachedToolpath = tc.find(toolName, version);
-        if (!cachedToolpath) {
-            core.debug(`Downloading ${toolName} from: ${url}`);
-            let downloadPath = null;
-            try {
-                downloadPath = yield tc.downloadTool(url);
-            }
-            catch (error) {
-                core.debug(error);
-                throw `Failed to download version ${version}: ${error}`;
-            }
-            let extPath;
-            if (path.extname(url) === 'zip') {
-                extPath = yield tc.extractZip(downloadPath);
-            }
-            else {
-                extPath = yield tc.extractTar(downloadPath);
-            }
-            cachedToolpath = yield tc.cacheFile(path.join(extPath, binaryPath, toolName + getExecutableExtension()), toolName + getExecutableExtension(), toolName, version);
-        }
-        const executablePath = path.join(cachedToolpath, toolName + getExecutableExtension());
-        fs.chmodSync(executablePath, '777');
-        return executablePath;
-    });
-}
-exports.getTarballBinary = getTarballBinary;
-function getExecutableExtension() {
-    if (os.type().match(/^Win/)) {
-        return '.exe';
-    }
-    return '';
-}
-exports.getExecutableExtension = getExecutableExtension;
 
 
 /***/ }),

@@ -7,5 +7,7 @@ module.exports = {
   transform: {
     '^.+\\.ts$': 'ts-jest'
   },
+  globalSetup: '<rootDir>/__tests__/global-setup.js',
+  globalTeardown: '<rootDir>/__tests__/global-teardown.js',  
   verbose: true
 }
