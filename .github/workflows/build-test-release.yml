@@ -2,12 +2,12 @@ name: 'build-test-release'
 on:
   workflow_dispatch:
   pull_request:
-#  push:
-#    branches:
-#      - main
-#    paths-ignore:
-#    - '.github/**'
-#    - 'README.md'
+  push:
+    branches:
+      - main
+    paths-ignore:
+    - '.github/**'
+    - 'README.md'
 
 jobs:
   build: # make sure build/ci work properly
