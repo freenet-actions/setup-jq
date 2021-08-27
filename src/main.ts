@@ -6,7 +6,7 @@ async function run(): Promise<void> {
     const version: string = core.getInput('version')
     core.debug('version ${version} ')
     await installer.install(version)
-  } catch (error) {
+  } catch (error: any) {
     core.setFailed(error.message)
   }
 }
