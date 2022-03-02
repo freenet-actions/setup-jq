@@ -14,7 +14,7 @@ jobs:
     name: Build Package
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: |
           npm install
       - run: |
@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: build release
       run: |
        git config --local user.email "action@github.com"
