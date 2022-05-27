@@ -1,6 +1,6 @@
 name: 'setup-jq'
 description: 'Install jq parser'
-author: 'mobilcom-debitel'
+author: 'freenet'
 inputs:
   version: 
     required: true
