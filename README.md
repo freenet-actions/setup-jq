@@ -5,7 +5,7 @@ This action sets up the jq tool. It downloads jq binaries from https://github.co
 
    
 # Usage
-## Set up default jq version (1.7)
+## Set up default jq version (1.7.1)
 ```yaml
 - uses: freenet-actions/setup-jq@v3
 ```
@@ -13,5 +13,5 @@ This action sets up the jq tool. It downloads jq binaries from https://github.co
 ```yaml
 - uses: freenet-actions/setup-jq@v3
   with:
-    version: 1.7
+    version: 1.7.1
 ```

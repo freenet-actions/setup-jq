@@ -5,7 +5,7 @@ inputs:
   version: 
     required: true
     description: 'Version of jq'
-    default: '1.7'
+    default: '1.7.1'
 runs:
   using: 'node20'
   main: 'dist/index.js'
