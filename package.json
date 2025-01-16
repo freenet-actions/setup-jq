@@ -28,7 +28,7 @@
     "ansi-regex": ">=6.1.0",
     "set-value": ">=4.0.1",
     "@actions/core": "1.11.1",
-    "@actions/tool-cache": "2.0.1"
+    "@actions/tool-cache": "2.0.2"
   },
   "devDependencies": {
     "@types/jest": "28.1.8",
