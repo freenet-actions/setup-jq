@@ -2,10 +2,10 @@ name: 'setup-jq'
 description: 'Install jq parser'
 author: 'freenet'
 inputs:
-  version: 
+  version:
     required: true
     description: 'Version of jq'
-    default: '1.7.1'
+    default: '1.8.1'
 runs:
   using: 'node20'
   main: 'dist/index.js'
