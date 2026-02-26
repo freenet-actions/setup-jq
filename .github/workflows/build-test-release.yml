@@ -1,52 +1,64 @@
 name: 'build-test-release'
-on:
+
+on: 
   workflow_dispatch:
   pull_request:
   push:
     branches:
       - main
     paths-ignore:
-    - '.github/**'
     - 'README.md'
 
 jobs:
-  build: # make sure build/ci work properly
-    name: Build Package
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - run: |
-          npm install
-      - run: |
-          npm run all
-      - uses: actions/upload-artifact@v4
+      - name: ⬇️ Checkout Repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        with:
+          node-version-file: .nvmrc
+      - name: 📦 Install Dependencies
+        run: npm ci --ignore-scripts
+      - name: 🚧 Run All Tests
+        run: npm run all
+      - name: ⬆️ Upload Artifact
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: action-package
           path: |
             action.yml
             dist/*
+
   test:
-    name: Test the action
     runs-on: ubuntu-latest
-    needs: build       
+    needs: build
     steps:
-    - uses: actions/download-artifact@v5
-      with:
-        name: action-package
-    - name: run test
-      uses: ./
+      - name: ⬇️ Download Artifact
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: action-package
+      - name: Run Test
+        uses: ./
+
   release:
     if: github.event_name == 'workflow_dispatch'
-    name: Publish new release
+    name: Publish New Release
     runs-on: ubuntu-latest
     needs: test
     steps:
-    - uses: actions/checkout@v5
-    - name: build release
+    - name: ⬇️ Checkout Repository
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+    - name: ⚙️ Setup Node.js
+      uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+      with:
+        node-version-file: .nvmrc
+    - name: 🚧 Build Release
       run: |
        git config --local user.email "action@github.com"
        git config --local user.name "GitHub Action"                    
-       npm install
+       npm ci --ignore-scripts
        npm run build && npm run package
        git add dist
        git commit --allow-empty -m "new release"
@@ -56,7 +68,7 @@ jobs:
        git push origin v$PACKAGE_VERSION --force
        git tag -fa v$MAIN_PACKAGE_VERSION -m "Update tag"
        git push origin v$MAIN_PACKAGE_VERSION --force
-    - name: Increment Version
+    - name: ⚙️ Increment Version
       run: |
        npm version patch --force
        git push --force
