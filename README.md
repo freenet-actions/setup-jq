@@ -3,7 +3,7 @@
 
 This action sets up the jq tool. It downloads jq binaries from https://github.com/stedolan/jq/releases and adds path to PATH.
 
-If you're using GitHub-hosted runners in your workflow, you probably don't need this (see "Included Software" on https://github.com/actions/runner-images), unless you want to downgrade/pin the version..
+If you're using GitHub-hosted runners in your workflow, you probably don't need this (see "Included Software" on https://github.com/actions/runner-images), unless you want to downgrade/pin the version.
    
 # Usage
 ## Set up default jq version (1.8.1)
