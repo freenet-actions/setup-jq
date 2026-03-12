@@ -6,8 +6,12 @@ async function run(): Promise<void> {
     const version: string = core.getInput('version')
     core.debug('version ${version} ')
     await installer.install(version)
-  } catch (error: any) {
-    core.setFailed(error.message)
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      core.setFailed(error.message)
+    } else {
+      core.setFailed('An unknown error occurred')
+    }
   }
 }
 
