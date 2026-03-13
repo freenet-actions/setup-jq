@@ -31,8 +31,11 @@ function getAppName(tool: string): string {
         case 'x64':
           appname = `${tool}-linux64`
           break
-        case 'arm64':
+        case 'arm64': // Not tested
           appname = `${tool}-linux-arm64`
+          break
+        case 'arm': // Not tested
+          appname = `${tool}-linux-arm`
           break
       }
       break
