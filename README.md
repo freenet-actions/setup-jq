@@ -8,11 +8,11 @@ If you're using GitHub-hosted runners in your workflow, you probably don't need 
 # Usage
 ## Set up default jq version (1.8.1)
 ```yaml
-- uses: freenet-actions/setup-jq@v3
+- uses: freenet-actions/setup-jq@v4.0.0
 ```
 ## Set up specific jq version
 ```yaml
-- uses: freenet-actions/setup-jq@v3
+- uses: freenet-actions/setup-jq@v4.0.0
   with:
     version: 1.8.1
 ```
