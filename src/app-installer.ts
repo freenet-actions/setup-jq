@@ -20,7 +20,7 @@ export async function install(version: string): Promise<void> {
 
 function getDownloadUrl(version: string, tool: string): string {
   const appname = getAppName(tool)
-  return `https://github.com/stedolan/jq/releases/download/jq-${version}/${appname}`
+  return `https://github.com/jqlang/jq/releases/download/jq-${version}/${appname}`
 }
 
 function getAppName(tool: string): string {
@@ -55,7 +55,7 @@ function getAppName(tool: string): string {
       break
   }
   if (!appname) {
-    throw `Unsupported platform. platform:${os.platform()}, arch:${os.arch()}`
+    throw `Unsupported platform. platform: ${os.platform()}, arch: ${os.arch()}`
   }
   return appname
 }
